@@ -1,0 +1,16 @@
+{
+    "name": "nicholas/sample",
+    "description": "sample project",
+    "type": "project",
+    "require": {
+        "slim/slim": "^3.7",
+        "catfan/Medoo": "^1.1",
+        "tuupola/slim-basic-auth": "^2.2"
+    },
+    "authors": [
+        {
+            "name": "Nicholas",
+            "email": "snickdx@gmail.com"
+        }
+    ]
+}

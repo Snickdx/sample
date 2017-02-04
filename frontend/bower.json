@@ -1,0 +1,21 @@
+{
+  "name": "frontend",
+  "authors": [
+    "Nicholas <snickdx@gmail.com>"
+  ],
+  "description": "sample project",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap": "^2.5.0"
+  }
+}
