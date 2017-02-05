@@ -19,10 +19,26 @@
 <body ng-controller="mainController">
 
 <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" href="#">Rental App</a>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <a class="navbar-brand" href="#">Rental App</a>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <select  ng-model="input.returnedBook" class="custom-select" id="inlineFormCustomSelect">
+                    <option value="Select Option" selected>Select Book</option>
+                    <option  ng-repeat="book in books" value="{{book.bookId}}" ng-if="book.borrowedBy != undefined && book.borrowedBy == userId">{{book.title}}{{book.borrowedBy}}</option>
+                </select>
+
+                <button type="submit"  ng-disabled="input.returnedBook == 'Select Option'" ng-click="returnBook()" class="btn btn-primary">Return Book</button>
+            </div>
+        </div>
+
+    </div>
+
+
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -56,30 +72,17 @@
 </div> <!-- /container -->
 
 <div class="container" ng-hide="!loggedIn">
-    <div class="row" style="padding-top: 10%">
-        <div class="container col-sm-12 col-md-7 card card-outline-secondary pre-scrollable" style="padding-top: 10px; min-height: 80vh">
+    <div class="column" style="padding-top: 10%">
+        <div class="container col-sm-12" style="" >
             <div class="card text-left" ng-repeat="book in books" style="margin-bottom: 4px; min-height: 230px">
                 <div class="card-block" >
                     <h4 class="card-title">{{book.title}}</h4>
-                    <p class="card-text">Title: {{book.author}}</p>
+                    <p class="card-text">Author: {{book.author}}</p>
                     <p class="card-text">Published: {{book.published}}</p>
                     <p class="card-text">{{book.borrowedBy ? "Borrowed": "Available"}}</p>
-                    <a href="#" class="btn btn-primary" ng-hide="book.borrowedBy != undefined">Rent</a>
+                    <a href="#" class="btn btn-primary" ng-hide="book.borrowedBy != undefined" ng-click="borrowBook(book.bookId)">Rent</a>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-5 card card-outline-secondary" style="padding-top: 30vh">
-            <form>
-
-                <div class="form-group">
-                    <label for="exampleSelect1">Return Book</label>
-                    <select class="form-control" ng-model="input.returnedBook" id="exampleSelect1">
-                        <option value="book.id" ng-repeat="book in books" ng-if="book.borrowedBy != undefined && book.borrowedBy == userId">{{book.title}}</option>
-                    </select>
-                </div>
-
-                <button type="submit" ng-disabled="input.returnedBook == 'Select Option'" ng-click="returnBook()" class="btn btn-primary">Return Book</button>
-            </form>
         </div>
     </div>
 

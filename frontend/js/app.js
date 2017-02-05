@@ -1,6 +1,6 @@
 var app = angular.module('sample', ['ui.bootstrap']);
 
-var url = "http://localhost";
+var url = "http://localhost/sample/backend/index.php";
 
 console.log('loaded app');
 
@@ -12,35 +12,49 @@ app.controller('mainController', function($scope, AuthService, BackendService){
         returnedBook: "Select Option"
     };
 
-    $scope.userId = 1;
+    $scope.userId = null;
 
-    $scope.books = [
-        {
-            author:"bob",
-            published: "yesterday",
-            title:"kek"
-        },
-        {
-            author:"bob",
-            published: "today",
-            title:"kek2",
-            borrowedBy: 3
-        },
-        {
-            author:"janis",
-            published: "sometime",
-            title:"kek3",
-            borrowedBy: 1
-        },
-        {
-            author:"janis",
-            published: "sometime",
-            title:"kek4",
-            borrowedBy: 1
-        }
-    ];
+    // $scope.books = [
+    //     {
+    //         bookId: 1,
+    //         author:"bob",
+    //         published: "yesterday",
+    //         title:"kek"
+    //     },
+    //     {
+    //         bookId: 2,
+    //         author:"bob",
+    //         published: "today",
+    //         title:"kek2",
+    //         borrowedBy: 3
+    //     },
+    //     {
+    //         bookId: 3,
+    //         author:"janis",
+    //         published: "sometime",
+    //         title:"kek3",
+    //         borrowedBy: 1
+    //     },
+    //     {
+    //         bookId: 4,
+    //         author:"janis",
+    //         published: "sometime",
+    //         title:"kek4",
+    //         borrowedBy: 1
+    //     }
+    // ];
 
-    $scope.loggedIn = true;
+    $scope.signIn = function(){
+        AuthService.login($scope.input, function(response){
+            console.log(response);
+            $scope.userId = response.data[0].userId;
+            $scope.loggedIn = true;
+        })
+    };
+
+    $scope.books = [];
+
+    $scope.loggedIn = false;
 
     $scope.loadBooks = function(){
         BackendService.getBooks(function(response){
@@ -65,29 +79,29 @@ app.controller('mainController', function($scope, AuthService, BackendService){
     };
 
     $scope.borrowBook = function(id){
-        BackendService.borrowBook(id, function(response){
+        BackendService.borrowBook(id, $scope.userId, function(response){
             if(response.status == 200){
-                alert("success");
+                console.log("success");
             }else{
-                alert("error");
+                console.log("error");
             }
             $scope.loadBooks();
         });
     };
 
     $scope.returnBook = function(){
-        BackendService.returnBook($scope.input.returnedBook, function(response){
+        BackendService.returnBook($scope.input.returnedBook, $scope.userId, function(response){
             if(response.status == 200){
-                alert("success");
+                console.log("success");
             }else{
-                alert("error");
+                console.log("error");
             }
             $scope.input.returnedBook = "Select Option";
             $scope.loadBooks();
         });
     };
 
-    // $scope.loadBooks();
+    $scope.loadBooks();
 });
 
 app.factory('AuthService', function($http){
@@ -129,21 +143,21 @@ app.factory('BackendService', function($http){
         });
     };
 
-    service.borrowBook = function(bookId, callback){
+    service.borrowBook = function(bookId, userId, callback){
         $http({
             method: "POST",
             url : url+"/borrowBook",
-            data: bookId
+            data: {bookId : bookId, userId: userId}
         }).then(function(response){
             callback(response);
         });
     };
 
-    service.returnBook = function(bookId, callback){
+    service.returnBook = function(bookId, userId, callback){
         $http({
             method: "POST",
             url : url+"/returnBook",
-            data: bookId
+            data: {bookId : bookId, userId: userId}
         }).then(function(response){
             callback(response);
         });
