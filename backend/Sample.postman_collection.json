@@ -1,0 +1,93 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Sample",
+		"_postman_id": "6e8adc45-f866-719f-114d-1a6ee97d09fe",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"url": "localhost/sample/backend/index.php/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"bob\",\n\t\"password\":\"bob\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Borrow Book",
+			"request": {
+				"url": "localhost/sample/backend/index.php/borrowBook",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"bookId\":\"5\",\n\t\"userId\":\"1\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Return Book",
+			"request": {
+				"url": "localhost/sample/backend/index.php/returnBook",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"bookId\":\"3\",\n\t\"userId\": \"1\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Books",
+			"request": {
+				"url": "localhost/sample/backend/index.php/getBooks",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Book",
+			"request": {
+				"url": "localhost/sample/backend/index.php/getBook/1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
