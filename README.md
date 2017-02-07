@@ -1,4 +1,4 @@
-# sample - A simple full stack application for educational purposed
+# sample - A simple full stack application for educational purposes
 
 
 ##Technologies
