@@ -1,177 +1,124 @@
-var app = angular.module('sample', ['ui.bootstrap']);
+var url = "http://localhost/sample/backend/index.php/";
 
-var url = "http://localhost/sample/backend/index.php";
+$(document).ready(function(){
 
-console.log('loaded app');
+    $("#booksContainer").hide();
 
-app.controller('mainController', function($scope, AuthService, BackendService){
+    $("#signInBtn").click(function(){
+        signIn(function(userId)
+        {
+            $("#signUpContainer").hide();
+            $("#booksContainer").show();
 
-    $scope.input = {
-        username: "",
-        password: "",
-        returnedBook: "Select Option"
-    };
+            loadBooks(userId);
 
-    $scope.userId = null;
-
-    // $scope.books = [
-    //     {
-    //         bookId: 1,
-    //         author:"bob",
-    //         published: "yesterday",
-    //         title:"kek"
-    //     },
-    //     {
-    //         bookId: 2,
-    //         author:"bob",
-    //         published: "today",
-    //         title:"kek2",
-    //         borrowedBy: 3
-    //     },
-    //     {
-    //         bookId: 3,
-    //         author:"janis",
-    //         published: "sometime",
-    //         title:"kek3",
-    //         borrowedBy: 1
-    //     },
-    //     {
-    //         bookId: 4,
-    //         author:"janis",
-    //         published: "sometime",
-    //         title:"kek4",
-    //         borrowedBy: 1
-    //     }
-    // ];
-
-    $scope.signIn = function(){
-        AuthService.login($scope.input, function(response){
-            console.log(response);
-            $scope.userId = response.data[0].userId;
-            $scope.loggedIn = true;
-        })
-    };
-
-    $scope.books = [];
-
-    $scope.loggedIn = false;
-
-    $scope.loadBooks = function(){
-        BackendService.getBooks(function(response){
-            $scope.books = response.data;
+            $("#returnBtn").click(function(){
+                var bookId = $("#bookSelect").val();
+                console.log(bookId, userId);
+                returnBook(bookId, userId);
+            });
         });
-    };
+    });
 
-    $scope.login = function(){
-        AuthService.login($scope.input, function(response){
-            if(response.response == 200){
-                alert("logged In");
-                $scope.loggedIn = true;
-                $scope.userId = response.data.id;
-            }else{
-                alert("error");
-            }
-        });
-    };
 
-    $scope.logout = function(){
-        $scope.loggedIn = false;
-    };
 
-    $scope.borrowBook = function(id){
-        BackendService.borrowBook(id, $scope.userId, function(response){
-            if(response.status == 200){
-                console.log("success");
-            }else{
-                console.log("error");
-            }
-            $scope.loadBooks();
-        });
-    };
-
-    $scope.returnBook = function(){
-        BackendService.returnBook($scope.input.returnedBook, $scope.userId, function(response){
-            if(response.status == 200){
-                console.log("success");
-            }else{
-                console.log("error");
-            }
-            $scope.input.returnedBook = "Select Option";
-            $scope.loadBooks();
-        });
-    };
-
-    $scope.loadBooks();
-});
-
-app.factory('AuthService', function($http){
-
-    var service = {};
-
-    service.loggedIn = false;
-
-    service.login = function(authInfo, callback){
-        $http({
-            method: "POST",
-            url : url+"/login",
-            data: authInfo
-        }).then(function(response){
-            service.loggedIn = response.status == 200;
-            callback(response);
-        });
-    };
-
-    service.logout = function(){
-        service.loggedIn = false;
-    };
-
-    return service;
 
 });
 
-app.factory('BackendService', function($http){
+function loadBooks(userId){
 
-    var service = {};
+    $.ajax({
+        type: "GET",
+        url: url+"getBooks",
+        success: function(books){
+            books = JSON.parse(books);
+            console.log(books);
+            showBooks(books);
+            $(".borrowBtn").click(function(){
+                console.log(userId);
+                borrowBook($(this).attr('id'), userId);
+            });
+            showOptions(books, userId);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("some error");
+        }
+    });
 
-    service.getBooks = function(callback){
-        $http({
-            method : "GET",
-            url : url+"/getBooks"
-        }).then(function(response){
-            //https://docs.angularjs.org/api/ng/service/$http for more info on the response object
-            callback(response);
-        });
-    };
+}
 
-    service.borrowBook = function(bookId, userId, callback){
-        $http({
-            method: "POST",
-            url : url+"/borrowBook",
-            data: {bookId : bookId, userId: userId}
-        }).then(function(response){
-            callback(response);
-        });
-    };
+function borrowBook(bookId, userId){
+    //api call to borrow book
+    $.ajax({
+        type: "POST",
+        url: url+"borrowBook",
+        data: {bookId : bookId, userId: userId},
+        succss: function(resp){
+            console.log(resp);
+            loadBooks(userId);
+        }
+    });
+}
 
-    service.returnBook = function(bookId, userId, callback){
-        $http({
-            method: "POST",
-            url : url+"/returnBook",
-            data: {bookId : bookId, userId: userId}
-        }).then(function(response){
-            callback(response);
-        });
-    };
+function returnBook(bookId, userId){
 
-    service.getBook = function(id, callback){
-        $http({
-            method : "GET",
-            url : url+"/getBook/"+id
-        }).then(function(response){
-            //https://docs.angularjs.org/api/ng/service/$http for more info on the response object
-            callback(response);
-        });
-    };
+    $.ajax({
+        type: "POST",
+        url: url+"returnBook",
+        data: {bookId : bookId, userId: userId},
+        success: function (resp) {
+            console.log(resp);
+            loadBooks(userId);
+        }
+    });
 
-    return service;
-});
+
+}
+
+function signIn(callback){
+    var username = $("#username").val();
+    var password = $("#password").val();
+
+    $.ajax({
+        type: "POST",
+        url: url+"login",
+        data: {username : username, password: password},
+        success: function(response){
+            response = JSON.parse(response)[0];
+            callback(response.userId);
+        },
+        error: function(){
+            alert("Invalid Login");
+        }
+    });
+
+}
+
+function showOptions(books, id){
+    var html = `<option value="Select Option" selected>Select Book</option>`;
+    books.forEach(function(book){
+        if(book.borrowedBy != undefined && book.borrowedBy == id)html += `<option  value='${book.bookId}'>${book.title}</option>`;
+    });
+    $("#bookSelect").html(html);
+
+}
+
+function showBooks(books){
+    var html = ``;
+    books.forEach(function(book){
+        html+=`
+            <div class="card text-left" style="margin-bottom: 4px; min-height: 230px">
+                    <div class="card-block" >
+                        <h4 class="card-title">${book.title}</h4>
+                        <p class="card-text">Author: ${book.author}</p>
+                        <p class="card-text">Published: ${book.published}</p>
+                        <p class="card-text">${book.borrowedBy ? "Borrowed": "Available"}</p>
+                        ${book.borrowedBy == undefined ? `<input class="btn btn-primary borrowBtn" id="${book.bookId}" type="button" value="Rent">` : '' }
+                    </div>
+            </div>
+        `;
+    });
+    $("#bookList").html(html);
+
+
+}

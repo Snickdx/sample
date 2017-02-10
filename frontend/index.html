@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="sample">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,15 +8,22 @@
 
     <title>Rental</title>
 
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
     <!-- Bootstrap core CSS -->
-    <link href="bower_components/angular-bootstrap/ui-bootstrap-csp.css" rel="stylesheet">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap Material Design -->
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap-material-design/dist/bootstrap-material-design.css">
+
 
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
 </head>
 
-<body ng-controller="mainController">
+<body >
 
 <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
 
@@ -27,12 +34,11 @@
         </div>
         <div class="col-md-8">
             <div class="row">
-                <select  ng-model="input.returnedBook" class="custom-select" id="inlineFormCustomSelect">
-                    <option value="Select Option" selected>Select Book</option>
-                    <option  ng-repeat="book in books" value="{{book.bookId}}" ng-if="book.borrowedBy != undefined && book.borrowedBy == userId">{{book.title}}{{book.borrowedBy}}</option>
+                <select  id="bookSelect" class="custom-select">
+
                 </select>
 
-                <button type="submit"  ng-disabled="input.returnedBook == 'Select Option'" ng-click="returnBook()" class="btn btn-primary">Return Book</button>
+                <input type="button" id="returnBtn"  class="btn btn-primary" value="Return Book">
             </div>
         </div>
 
@@ -40,39 +46,29 @@
 
 </nav>
 
-<div class="container" ng-hide="loggedIn">
+<div id="signUpContainer" class="container" >
 
-    <form class="form-signin">
+    <form class="form-signin" name="signUpForm">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="text" id="inputEmail" ng-model="input.username" class="form-control" placeholder="username" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" ng-model="input.password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <button class="btn btn-lg btn-primary btn-block" ng-click="signIn()" type="submit">Sign in</button>
+        <label for="username" class="sr-only">Email address</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="username" required autofocus>
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+        <input class="btn btn-lg btn-primary btn-block" id="signInBtn" type="button" value="Sign in">
     </form>
 
 </div> <!-- /container -->
 
-<div class="container" ng-hide="!loggedIn">
+<div id="booksContainer" class="container">
     <div class="column" style="padding-top: 10%">
-        <div class="container col-sm-12" style="" >
-            <div class="card text-left" ng-repeat="book in books" style="margin-bottom: 4px; min-height: 230px">
-                <div class="card-block" >
-                    <h4 class="card-title">{{book.title}}</h4>
-                    <p class="card-text">Author: {{book.author}}</p>
-                    <p class="card-text">Published: {{book.published}}</p>
-                    <p class="card-text">{{book.borrowedBy ? "Borrowed": "Available"}}</p>
-                    <a href="#" class="btn btn-primary" ng-hide="book.borrowedBy != undefined" ng-click="borrowBook(book.bookId)">Rent</a>
-                </div>
-            </div>
+        <div class="container col-sm-12" id="bookList">
+
         </div>
     </div>
 
 </div>
 
-
-<script src="bower_components/angular/angular.min.js"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="js/app.js"></script>
 
 </body>
