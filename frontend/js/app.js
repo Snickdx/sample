@@ -1,4 +1,4 @@
-var url = "http://localhost/sample/backend/index.php/";
+var url = "http://162.243.52.181/sample/backend/index.php/";
 
 $(document).ready(function(){
 
