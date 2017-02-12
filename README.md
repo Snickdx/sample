@@ -2,7 +2,7 @@
 
 
 ##Technologies
-- Angular-Bootstrap
+- Bootstrap Material
 - Slim php 3
 - Medoo Database Library
 - Mysql DB
