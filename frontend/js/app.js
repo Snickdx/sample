@@ -86,6 +86,7 @@ app.controller('bookController', function($scope, AuthService, BackendService){
     //         $scope.books = response.data;
     //     });
     // };
+    //loading from dummy data instead
 
     $scope.borrowBook = function(id){
         BackendService.borrowBook(id, $scope.userId, function(response){
