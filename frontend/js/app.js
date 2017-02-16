@@ -1,82 +1,91 @@
-var app = angular.module('sample', ['ui.bootstrap']);
+var app = angular.module('sample', ['ui.bootstrap', 'ui.router']);
 
 var url = "http://localhost/sample/backend/index.php";
 
-console.log('loaded app');
+app.config(function($stateProvider, $urlRouterProvider) {
+    $stateProvider
+        .state('authors', {
+            url: '/authors',
+            views: {
+                nav: {
+                    templateUrl: 'templates/navbar.html'
+                },
+                content: {
+                    templateUrl: 'templates/authors.html'
+                }
+            },
+            controller:"authorController"
+        })
+        .state('books', {
+            url: '/books',
+            views: {
+                nav: {
+                    templateUrl: 'templates/navbar.html'
+                },
+                content: {
+                    templateUrl: 'templates/books.html',
+                    controller:"bookController"
+                }
+            }
+        })
+        .state('login', {
+            url: '/',
+            views: {
+                content: {
+                    templateUrl: 'templates/login.html',
+                    controller:"loginController"
+                }
 
-app.controller('mainController', function($scope, AuthService, BackendService){
+            }
+        });
+    $urlRouterProvider.otherwise('/');
+});
+
+app.controller('bookController', function($scope, AuthService, BackendService){
 
     $scope.input = {
-        username: "",
-        password: "",
         returnedBook: "Select Option"
     };
 
-    $scope.userId = null;
+    $scope.userId = AuthService.userId;
 
-    // $scope.books = [
-    //     {
-    //         bookId: 1,
-    //         author:"bob",
-    //         published: "yesterday",
-    //         title:"kek"
-    //     },
-    //     {
-    //         bookId: 2,
-    //         author:"bob",
-    //         published: "today",
-    //         title:"kek2",
-    //         borrowedBy: 3
-    //     },
-    //     {
-    //         bookId: 3,
-    //         author:"janis",
-    //         published: "sometime",
-    //         title:"kek3",
-    //         borrowedBy: 1
-    //     },
-    //     {
-    //         bookId: 4,
-    //         author:"janis",
-    //         published: "sometime",
-    //         title:"kek4",
-    //         borrowedBy: 1
-    //     }
-    // ];
+    $scope.books = [
+        {
+            bookId: 1,
+            author:"bob",
+            published: "yesterday",
+            title:"kek"
+        },
+        {
+            bookId: 2,
+            author:"bob",
+            published: "today",
+            title:"kek2",
+            borrowedBy: 3
+        },
+        {
+            bookId: 3,
+            author:"janis",
+            published: "sometime",
+            title:"kek3",
+            borrowedBy: 1
+        },
+        {
+            bookId: 4,
+            author:"janis",
+            published: "sometime",
+            title:"kek4",
+            borrowedBy: 1
+        }
+    ];
 
-    $scope.signIn = function(){
-        AuthService.login($scope.input, function(response){
-            console.log(response);
-            $scope.userId = response.data[0].userId;
-            $scope.loggedIn = true;
-        })
-    };
+    //$scope.books = [];
 
-    $scope.books = [];
-
-    $scope.loggedIn = false;
-
-    $scope.loadBooks = function(){
-        BackendService.getBooks(function(response){
-            $scope.books = response.data;
-        });
-    };
-
-    $scope.login = function(){
-        AuthService.login($scope.input, function(response){
-            if(response.response == 200){
-                alert("logged In");
-                $scope.loggedIn = true;
-                $scope.userId = response.data.id;
-            }else{
-                alert("error");
-            }
-        });
-    };
-
-    $scope.logout = function(){
-        $scope.loggedIn = false;
-    };
+    // $scope.loadBooks = function(){
+    //     BackendService.getBooks(function(response){
+    //         $scope.books = response.data;
+    //     });
+    // };
 
     $scope.borrowBook = function(id){
         BackendService.borrowBook(id, $scope.userId, function(response){
@@ -101,15 +110,52 @@ app.controller('mainController', function($scope, AuthService, BackendService){
         });
     };
 
-    $scope.loadBooks();
+    //$scope.loadBooks();
+});
+
+app.controller('loginController', function($scope, AuthService, $location){
+    console.log("in login");
+
+    $scope.input = {
+        username: "",
+        password: ""
+    };
+
+    $scope.signIn = function(){
+        AuthService.login($scope.input, function(response){
+            console.log(response);
+            $scope.userId = response.data[0].userId;
+            if(response.stats = 200){
+                $location.path("/books");
+            }else{
+                $location.path("/");
+            }
+        })
+    };
+
+});
+
+app.controller('authorController', function($scope, BackendService){});
+
+app.controller('navBarController', function(){
+    $scope.logout = function(){
+        $scope.loggedIn = false;
+    };
 });
 
 app.factory('AuthService', function($http){
 
     var service = {};
 
+    service.userId = null;
+
     service.loggedIn = false;
 
+    /**
+     * Logins In a user
+     * @param authInfo object {username : "username", password "password}
+     * @param callback
+     */
     service.login = function(authInfo, callback){
         $http({
             method: "POST",
@@ -117,6 +163,7 @@ app.factory('AuthService', function($http){
             data: authInfo
         }).then(function(response){
             service.loggedIn = response.status == 200;
+            service.userid = response.data[0].userId;
             callback(response);
         });
     };
