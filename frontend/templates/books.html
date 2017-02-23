@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="column" style="padding-top: 10%">
+        <div class="container col-sm-12" style="" >
+            <div class="card text-left" ng-repeat="book in books" style="margin-bottom: 4px; min-height: 230px">
+                <div class="card-block" >
+                    <h4 class="card-title">{{book.title}}</h4>
+                    <p class="card-text">Author: {{book.author}}</p>
+                    <p class="card-text">Published: {{book.published}}</p>
+                    <p class="card-text">{{book.borrowedBy ? "Borrowed": "Available"}}</p>
+                    <a href="#" class="btn btn-primary" ng-hide="book.borrowedBy != undefined" ng-click="borrowBook(book.bookId)">Rent</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
