@@ -80,13 +80,13 @@ app.controller('bookController', function($scope, AuthService, BackendService){
         }
     ];
 
-    //$scope.books = [];
+    $scope.books = [];
 
-    // $scope.loadBooks = function(){
-    //     BackendService.getBooks(function(response){
-    //         $scope.books = response.data;
-    //     });
-    // };
+    $scope.loadBooks = function(){
+        BackendService.getBooks(function(response){
+            $scope.books = response.data;
+        });
+    };
     //loading from dummy data instead
 
     $scope.borrowBook = function(id){
@@ -112,7 +112,7 @@ app.controller('bookController', function($scope, AuthService, BackendService){
         });
     };
 
-    //$scope.loadBooks();
+    $scope.loadBooks();
 });
 
 app.controller('loginController', function($scope, AuthService, $location){
