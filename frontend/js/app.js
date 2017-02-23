@@ -1,6 +1,6 @@
 var app = angular.module('sample', ['ui.bootstrap']);
 
-var url = "http://localhost/sample/backend/index.php";
+var url = "http://162.243.52.181/sample/backend/index.php";
 
 console.log('loaded app');
 
@@ -14,35 +14,35 @@ app.controller('mainController', function($scope, AuthService, BackendService){
 
     $scope.userId = null;
 
-    // $scope.books = [
-    //     {
-    //         bookId: 1,
-    //         author:"bob",
-    //         published: "yesterday",
-    //         title:"kek"
-    //     },
-    //     {
-    //         bookId: 2,
-    //         author:"bob",
-    //         published: "today",
-    //         title:"kek2",
-    //         borrowedBy: 3
-    //     },
-    //     {
-    //         bookId: 3,
-    //         author:"janis",
-    //         published: "sometime",
-    //         title:"kek3",
-    //         borrowedBy: 1
-    //     },
-    //     {
-    //         bookId: 4,
-    //         author:"janis",
-    //         published: "sometime",
-    //         title:"kek4",
-    //         borrowedBy: 1
-    //     }
-    // ];
+    $scope.books = [
+        {
+            bookId: 1,
+            author:"bob",
+            published: "yesterday",
+            title:"kek"
+        },
+        {
+            bookId: 2,
+            author:"bob",
+            published: "today",
+            title:"kek2",
+            borrowedBy: 3
+        },
+        {
+            bookId: 3,
+            author:"janis",
+            published: "sometime",
+            title:"kek3",
+            borrowedBy: 1
+        },
+        {
+            bookId: 4,
+            author:"janis",
+            published: "sometime",
+            title:"kek4",
+            borrowedBy: 1
+        }
+    ];
 
     $scope.signIn = function(){
         AuthService.login($scope.input, function(response){
