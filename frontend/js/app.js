@@ -8,7 +8,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/authors',
             views: {
                 nav: {
-                    templateUrl: 'templates/navbar.html'
+                    templateUrl: 'templates/navbar.html',
+                    controller: 'navBarController'
                 },
                 content: {
                     templateUrl: 'templates/authors.html'
@@ -21,7 +22,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/books',
             views: {
                 nav: {
-                    templateUrl: 'templates/navbar.html'
+                    templateUrl: 'templates/navbar.html',
+                    controller: 'navBarController'
                 },
                 content: {
                     templateUrl: 'templates/books.html',
@@ -50,35 +52,35 @@ app.controller('bookController', function($scope, AuthService, BackendService){
 
     $scope.userId = AuthService.userId;
 
-    $scope.books = [
-        {
-            bookId: 1,
-            author:"bob",
-            published: "yesterday",
-            title:"kek"
-        },
-        {
-            bookId: 2,
-            author:"bob",
-            published: "today",
-            title:"kek2",
-            borrowedBy: 3
-        },
-        {
-            bookId: 3,
-            author:"janis",
-            published: "sometime",
-            title:"kek3",
-            borrowedBy: 1
-        },
-        {
-            bookId: 4,
-            author:"janis",
-            published: "sometime",
-            title:"kek4",
-            borrowedBy: 1
-        }
-    ];
+    // $scope.books = [
+    //     {
+    //         bookId: 1,
+    //         author:"bob",
+    //         published: "yesterday",
+    //         title:"kek"
+    //     },
+    //     {
+    //         bookId: 2,
+    //         author:"bob",
+    //         published: "today",
+    //         title:"kek2",
+    //         borrowedBy: 3
+    //     },
+    //     {
+    //         bookId: 3,
+    //         author:"janis",
+    //         published: "sometime",
+    //         title:"kek3",
+    //         borrowedBy: 1
+    //     },
+    //     {
+    //         bookId: 4,
+    //         author:"janis",
+    //         published: "sometime",
+    //         title:"kek4",
+    //         borrowedBy: 1
+    //     }
+    // ];
 
     $scope.books = [];
 
@@ -87,8 +89,7 @@ app.controller('bookController', function($scope, AuthService, BackendService){
             $scope.books = response.data;
         });
     };
-    //loading from dummy data instead
-
+    
     $scope.borrowBook = function(id){
         BackendService.borrowBook(id, $scope.userId, function(response){
             if(response.status == 200){
@@ -139,10 +140,26 @@ app.controller('loginController', function($scope, AuthService, $location){
 
 app.controller('authorController', function($scope, BackendService){});
 
-app.controller('navBarController', function(){
+app.controller('navBarController', function($scope, BackendService, AuthService){
+    
+    $scope.userId = AuthService.getId();
+    
+    console.log($scope.userId);
+    
+    $scope.books = [];
+
+    $scope.loadBooks = function(){
+        BackendService.getBooks(function(response){
+            $scope.books = response.data;
+            console.log($scope.books);
+        });
+    };
+    
     $scope.logout = function(){
         $scope.loggedIn = false;
     };
+    
+    $scope.loadBooks();
 });
 
 app.factory('AuthService', function($http){
@@ -165,10 +182,15 @@ app.factory('AuthService', function($http){
             data: authInfo
         }).then(function(response){
             service.loggedIn = response.status == 200;
-            service.userid = response.data[0].userId;
+            service.userId = response.data[0].userId;
+            console.log(service.userId);
             callback(response);
         });
     };
+    
+    service.getId = function(){
+        return service.userId;
+    }
 
     service.logout = function(){
         service.loggedIn = false;

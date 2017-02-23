@@ -20,7 +20,7 @@
             <div class="row">
                 <select  ng-model="input.returnedBook" class="custom-select" id="inlineFormCustomSelect">
                     <option value="Select Option" selected>Select Book</option>
-                    <option  ng-repeat="book in books" value="{{book.bookId}}" ng-if="book.borrowedBy != undefined && book.borrowedBy == userId">{{book.title}}{{book.borrowedBy}}</option>
+                    <option  ng-repeat="book in books" value="{{book.bookId}}" ng-if="book.borrowedBy != undefined && book.borrowedBy == userId">{{book.title}}</option>
                 </select>
 
                 <button type="submit"  ng-disabled="input.returnedBook == 'Select Option'" ng-click="returnBook()" class="btn btn-primary">Return Book</button>
