@@ -21,7 +21,7 @@
 - host root directory on webserver.
 - browse localhost/sample/frontend.
 
-# DEMO
+## DEMO
 [here](http://162.243.52.181/sample2/frontend/)
 Login: 
 u:bob 
